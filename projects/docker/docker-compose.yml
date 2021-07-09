@@ -1,0 +1,51 @@
+version: "3"
+services:
+  proxy: 
+    image: nginx:latest
+    container_name: proxy
+    volumes:
+      - ./proxy/sites-enabled:/etc/nginx/conf.d
+      - ./www/:/var/www/html/     
+    ports:
+      - "80:80"
+    networks:
+      default:
+        aliases:
+          - finance-banc.local
+    depends_on:
+      - php71
+
+  php71:
+    build: ./php71/docker-files
+    container_name: php71
+    environment:
+      - PHP_IDE_CONFIG=serverName=php-cli # debug commandline scripts on phpstorm
+      - TZ=America/Sao_Paulo
+    volumes:
+      - ./www/:/var/www/html/
+      - composer-data:/root/.composer
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:4.0.5-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    hostname: redis
+    ports:
+      - "6379:6379"
+
+  mailhog:
+    image: mailhog/mailhog
+    expose:
+      - 1025
+      - 8025
+
+volumes:
+  composer-data:
+
+networks:
+  default:
+    ipam:
+       driver: default
+       config:
+          - subnet: 172.28.0.0/16

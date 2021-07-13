@@ -26,6 +26,7 @@ services:
       - composer-data:/root/.composer
     depends_on:
       - redis
+      - banco
 
   redis:
     image: redis:4.0.5-alpine
@@ -33,6 +34,17 @@ services:
     hostname: redis
     ports:
       - "6379:6379"
+
+  banco:
+    image: mysql:5.7
+    environment:
+      MYSQL_DATABASE: "fullstackphp"
+    hostname: banco
+    ports:
+      - "3306:3306"
+    volumes: 
+      - /home/igor/project/Docker/Volumes/MySql:/var/lib/mysql
+
 
   mailhog:
     image: mailhog/mailhog

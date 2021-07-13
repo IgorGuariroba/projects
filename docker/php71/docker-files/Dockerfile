@@ -7,6 +7,7 @@ RUN apk add --update --no-cache \
     autoconf \
     g++ \
     make \
+    php71-gd \
     libzip-dev \
     libedit-dev \
     icu-dev \
